@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>(); 
     Animator animator;
     PhotonView view;
-
+    GameObject Bone;
+    Bone bone;
+    
     // Các biến sử dụng cho việc tích slider
     private bool []triggerActive = new bool [6];        
     public float []holdTime = new float [6];
@@ -37,6 +39,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Bone =  GameObject.Find("Bone");
+        bone = Bone.GetComponent<Bone>();
         view = GetComponent<PhotonView>();
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -154,6 +158,7 @@ public class PlayerController : MonoBehaviour
                 slider.DiggingItem(holdTime[i]);
                 GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
                 PhotonView photonView = tmp.GetComponent<PhotonView>();
+                bone.addBone();
                 if (photonView.IsMine) PhotonNetwork.Destroy(tmp);
             }
         }
