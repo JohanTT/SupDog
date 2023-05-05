@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 
 public class DogScript : MonoBehaviour
 {
     public DragScript dragScript;
     public SpawnPlayers spawnPlayers;
-    public float health = 2;
+    public float health;
+    public float maxHealth;
     bool holding = false;
     Rigidbody2D rgDog;
     PhotonView view;
     SpriteRenderer spriteRenderer;
-    
+
+    public Image[] hearts;
+    public Sprite fullHeart;
+    public Sprite emptyHeart;
+
     // Lưu trữ vị trí ban đầu của đối tượng
     private Vector3 initialPosition;
     public float Health {
@@ -40,6 +46,31 @@ public class DogScript : MonoBehaviour
         if (spawnPlayers.getDragScript() != null) {
         dragScript = spawnPlayers.getDragScript();
         // print (spawnPlayers.getDragScript());
+        }
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (i < health)
+            {
+                hearts[i].sprite = fullHeart;
+            }
+            else
+            {
+                hearts[i].sprite = emptyHeart;
+            }
+
+            if (i < maxHealth)
+            {
+                hearts[i].enabled = true;
+            }
+            else
+            {
+                hearts[i].enabled = false;
+            }
         }
     }
 
