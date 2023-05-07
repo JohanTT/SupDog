@@ -1,21 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
+using TMPro;
+using System;
 
 public class ConnectToServer : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
-    void Start()
+    /*void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
+    }*/
+    public TMP_InputField usernameInput;
+    public GameObject welcomePanel;
+    public GameObject namePanel;
+
+    public GameObject connectButton;
+    public Sprite connecting;
+
+    void Update()
+    {
+        if (Input.anyKey)
+        {
+            welcomePanel.SetActive(false);
+            namePanel.SetActive(true);
+        }
+    }
+
+    public void OnClickConnect()
+    {
+        if (usernameInput.text.Length >= 1)
+        {
+            connectButton.GetComponent<Image>().sprite = connecting;
+            PhotonNetwork.NickName = usernameInput.text;
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby();
-        print("I have connect to server");
     }
 
     public override void OnJoinedLobby()
