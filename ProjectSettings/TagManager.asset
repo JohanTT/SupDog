@@ -13,6 +13,7 @@ TagManager:
   - Hole6
   - Hole1
   - Dog
+  - PlayerItem
   layers:
   - Default
   - TransparentFX

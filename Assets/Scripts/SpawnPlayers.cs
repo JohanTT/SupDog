@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class SpawnPlayers : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class SpawnPlayers : MonoBehaviour
 
     private void Start() 
     {
+        foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
+        {
+            print(player.Value.NickName);
+        }
         // Vector3 dogPosition1 = new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
         // Vector3 dogPosition2 = new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
         // Vector3 dogPosition3 = new Vector3(Random.Range(-2f, 2f), Random.Range(-2f, 2f));
