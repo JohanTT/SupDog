@@ -8,7 +8,6 @@ using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
-    public SliderController slider;
     public ContactFilter2D movementFilter;
     public float moveSpeed = 0.5f;
     public float CollisionOffset = 0.05f;
@@ -20,12 +19,7 @@ public class PlayerController : MonoBehaviour
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>(); 
     Animator animator;
     PhotonView view;
-    GameObject Bone;
-    Bone bone;
-    
-    // Các biến sử dụng cho việc tích slider
-    private bool []triggerActive = new bool [6];        
-    public float []holdTime = new float [6];
+
     // Các biến sử dụng cho việc di chuyển và set Animation
     public SwordAttack swordAttack;
     public DragScript dragScript;
@@ -39,16 +33,10 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Bone =  GameObject.Find("Bone");
-        bone = Bone.GetComponent<Bone>();
         view = GetComponent<PhotonView>();
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        for (int i = 0; i < 6; i++) {
-            triggerActive[i] = false;
-            holdTime[i] = 0f;
-        }
         // Tắt collider của kiếm và chỉnh animator mặc định để collider ở đúng vị trí ban đầu
         swordAttack.StopAttack();
         dragScript.StopDrag();
@@ -120,48 +108,6 @@ public class PlayerController : MonoBehaviour
             }
             //End dash move
         }
-        // Chức năng đào
-        for (int i = 0; i < 6; i++) {
-            // if (view.IsMine)
-            {
-                if (Input.GetKey(KeyCode.Space) && triggerActive[i]) {
-                    holdTime[i] += 0.03f;
-                    slider.DiggingItem(holdTime[i]);
-                    if (view.IsMine) slider.TriggerSlider(true);
-                    if (view.IsMine) animator.SetBool("canMoveAfterDig", false);
-                    if (view.IsMine) {
-                        GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
-                        PhotonView photonView = tmp.GetComponent<PhotonView>();
-                        if (photonView != null) {
-                            print(photonView.ViewID);
-                            if (!photonView.IsMine) {
-                                photonView.TransferOwnership(PhotonNetwork.LocalPlayer);
-                                print("Transfer to " + view.ViewID);
-                            }
-                        }
-                    }
-                }
-                else if (!Input.GetKey(KeyCode.Space)) {
-                    if (view.IsMine) animator.SetBool("canMoveAfterDig", true);
-                    // Giảm dần hố đã đào
-                    // if (holdTime[i] >= 0.0f)  
-                    // {
-                    //     holdTime[i] -= 0.0009f;
-                    //     _itemDiggingController.DiggingItem(holdTime[i]);
-                    // }
-                }
-            }
-            if (triggerActive[i] && holdTime[i] >= 3f)
-            {
-                if (view.IsMine) slider.TriggerSlider(false);
-                holdTime[i] = 0f;
-                slider.DiggingItem(holdTime[i]);
-                GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
-                PhotonView photonView = tmp.GetComponent<PhotonView>();
-                bone.addBone();
-                if (photonView.IsMine) PhotonNetwork.Destroy(tmp);
-            }
-        }
     }
     
     private void FixedUpdate()
@@ -220,35 +166,6 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue movementValue)
     {
         movementInput = movementValue.Get<Vector2>();
-    }
-
-    public void OnTriggerEnter2D(Collider2D other)
-    {
-        for (int i = 0; i < 6; i++) {
-            if (other.gameObject.CompareTag("Hole" + (i+1).ToString()))
-            {
-                triggerActive[i] = true;
-                if (holdTime[i] > 0) {
-                    slider.TriggerSlider(true);
-                    slider.DiggingItem(holdTime[i]);
-                    // _itemDiggingController.TriggerSlider(true);
-                    // _itemDiggingController.DiggingItem(holdTime[i]);
-                }
-            }
-        }
-    }
- 
-    public void OnTriggerExit2D(Collider2D other)
-    {
-        for (int i = 0; i < 6; i++) {
-            if (other.gameObject.CompareTag("Hole" + (i+1).ToString()))
-            {
-                triggerActive[i] = false;
-                slider.TriggerSlider(false);
-                // _itemDiggingController.TriggerSlider(false);
-            }
-        }
-    
     }
 
     public void SwordAttack() {

@@ -6,7 +6,7 @@ using Photon.Pun;
 public class SpawnPlayers : MonoBehaviour
 {
     public GameObject playerPrefab;
-    // public GameObject dogPrefab;
+    public GameObject dogPrefab;
     public DragScript playerDragScript;
     // Đặt vị trí spawn
     public float minX = -1.961f;
@@ -24,7 +24,7 @@ public class SpawnPlayers : MonoBehaviour
 
         Vector3 position = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY));
         
-        player = PhotonNetwork.Instantiate(playerPrefab.name, position, Quaternion.identity);   
+        player = PhotonNetwork.Instantiate(dogPrefab.name, position, Quaternion.identity);   
         // dog1 = PhotonNetwork.Instantiate(dogPrefab.name, dogPosition1, Quaternion.identity);
         // dog2 = PhotonNetwork.Instantiate(dogPrefab.name, dogPosition2, Quaternion.identity);
         // dog3 = PhotonNetwork.Instantiate(dogPrefab.name, dogPosition3, Quaternion.identity);
