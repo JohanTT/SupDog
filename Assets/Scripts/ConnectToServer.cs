@@ -35,6 +35,7 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
         if (usernameInput.text.Length >= 1)
         {
             connectButton.GetComponent<Image>().sprite = connecting;
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.NickName = usernameInput.text;
             PhotonNetwork.ConnectUsingSettings();
         }
