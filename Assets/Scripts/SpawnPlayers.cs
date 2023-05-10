@@ -7,7 +7,7 @@ using Photon.Realtime;
 public class SpawnPlayers : MonoBehaviour
 {
     public GameObject playerPrefab;
-    // public GameObject dogPrefab;
+    public GameObject dogPrefab;
     public DragScript playerDragScript;
     // Đặt vị trí spawn
     public float minX = -1.961f;

@@ -988,6 +988,7 @@ GameObject:
   - component: {fileID: -5901745504926453345}
   - component: {fileID: 4509601487377020247}
   - component: {fileID: -4514743387447877165}
+  - component: {fileID: -6901809107144072983}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1108,7 +1109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 540190ce7cde4de42b9ddce4a10cb1dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 1417615978}
   movementFilter:
     useTriggers: 0
     useLayerMask: 0
@@ -1126,13 +1126,6 @@ MonoBehaviour:
   moveSpeed: 0.5
   CollisionOffset: 0.05
   vcam: {fileID: 1881705564}
-  holdTime:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
   swordAttack: {fileID: 7609122511946260487}
   dragScript: {fileID: 7609122513041193217}
   dashSpeed: 0.8
@@ -1207,7 +1200,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &305301071822131343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1352,3 +1344,11 @@ SpriteMask:
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
+--- !u!81 &-6901809107144072983
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8460374843606214215}
+  m_Enabled: 1
