@@ -13,6 +13,9 @@ TagManager:
   - Hole6
   - Hole1
   - Dog
+  - Bullet
+  - Blue Portal
+  - Orange Portal
   layers:
   - Default
   - TransparentFX
@@ -52,4 +55,13 @@ TagManager:
     locked: 0
   - name: Dog
     uniqueID: 3660165301
+    locked: 0
+  - name: Background
+    uniqueID: 1871851351
+    locked: 0
+  - name: Midground
+    uniqueID: 1067655143
+    locked: 0
+  - name: Forground
+    uniqueID: 986282805
     locked: 0
