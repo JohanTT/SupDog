@@ -43,8 +43,6 @@ public class DogScript : MonoBehaviour
     public float dashCounter;
     public float dashCoolCounter;
     // bark sound
-    public int barkCounter;
-    public float barkCooler = 0;
     public float barkCoolCounter = 0;
     // Lưu trữ vị trí ban đầu của đối tượng
     private Vector3 initialPosition;
@@ -79,6 +77,10 @@ public class DogScript : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = barkClip;
+        if (view.IsMine) {
+            hearts[0].gameObject.SetActive(true);
+            hearts[1].gameObject.SetActive(true);        
+        }
     }
 
     private void Update() {
@@ -87,50 +89,41 @@ public class DogScript : MonoBehaviour
         // dragScript = spawnPlayers.getDragScript();
         // // print (spawnPlayers.getDragScript());
         // }
-        // Thanh máu
-        if (health > maxHealth)
-        {
-            health = maxHealth;
-        }
+        if (view.IsMine) {
+            // // Thanh máu
+            // if (health > maxHealth)
+            // {
+            //     health = maxHealth;
+            // }
+            for (int i = 0; i < hearts.Length; i++)
+            {
+                if (i < health)
+                {
+                    hearts[i].sprite = fullHeart;
+                }
+                else
+                {
+                    hearts[i].sprite = emptyHeart;
+                }
 
-        for (int i = 0; i < hearts.Length; i++)
-        {
-            if (i < health)
-            {
-                hearts[i].sprite = fullHeart;
-            }
-            else
-            {
-                hearts[i].sprite = emptyHeart;
-            }
-
-            if (i < maxHealth)
-            {
-                hearts[i].enabled = true;
-            }
-            else
-            {
-                hearts[i].enabled = false;
+                if (i < maxHealth)
+                {
+                    hearts[i].enabled = true;
+                }
+                else
+                {
+                    hearts[i].enabled = false;
+                }
             }
         }
 
         // Chức năng sủa
         if (view.IsMine && Input.GetKey(KeyCode.J)) {
-            if (barkCounter < 5 && barkCoolCounter <= 0) {
+            if (barkCoolCounter <= 0) {
                 audioSource.clip = barkClip;
                 audioSource.Play();
                 animator.SetBool("canMoveAfterBark", false);
-                barkCoolCounter = 1f;
-                barkCounter++;
-                barkCooler += 2f;
-            }
-        }
-        // Hồi số lần sủa
-        if (barkCounter > 0)
-        {
-            barkCooler -= Time.deltaTime;
-            if (barkCooler/2 == barkCounter + 1) {
-                barkCounter--;
+                barkCoolCounter = 2f;
             }
         }
         // Hồi sủa liên tục
@@ -146,7 +139,7 @@ public class DogScript : MonoBehaviour
                     animator.SetTrigger("isDigging");
                     if (view.IsMine) animator.SetBool("canMoveAfterDig", false);
                     if (triggerActive[i]) {
-                        holdTime[i] += 0.03f;
+                        holdTime[i] += 0.3f;
                         slider.DiggingItem(holdTime[i]);
                         if (view.IsMine) slider.TriggerSlider(true);
                         if (view.IsMine) {
@@ -162,8 +155,8 @@ public class DogScript : MonoBehaviour
                         }
                     }
                 }
-                else if (!Input.GetKey(KeyCode.Space)) {
-                    if (view.IsMine) animator.SetBool("canMoveAfterDig", true);
+                // else if (!Input.GetKey(KeyCode.Space)) {
+                //     if (view.IsMine) animator.SetBool("canMoveAfterDig", true);
                     //animator.SetTrigger("isDigging");
                     // Giảm dần hố đã đào
                     // if (holdTime[i] >= 0.0f)  
@@ -171,7 +164,7 @@ public class DogScript : MonoBehaviour
                     //     holdTime[i] -= 0.0009f;
                     //     _itemDiggingController.DiggingItem(holdTime[i]);
                     // }
-                }
+                // }
             }
             if (triggerActive[i] && holdTime[i] >= 3f)
             {
@@ -180,7 +173,8 @@ public class DogScript : MonoBehaviour
                 slider.DiggingItem(holdTime[i]);
                 GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
                 PhotonView photonView = tmp.GetComponent<PhotonView>();
-                bone.addBone();
+                PhotonView photonViewBone = PhotonView.Find(13);
+                photonViewBone.RPC("addBone", RpcTarget.All);
                 if (photonView.IsMine) PhotonNetwork.Destroy(tmp);
             }
         }
@@ -234,8 +228,10 @@ public class DogScript : MonoBehaviour
             }
             if (movementInput.x < 0) {
                 spriteRenderer.flipX = true;
+                view.RPC("FlipAnimationRPC", RpcTarget.All, true);
             } else if (movementInput.x > 0) {
                 spriteRenderer.flipX = false;
+                view.RPC("FlipAnimationRPC", RpcTarget.All, false);
             }
         }
         /*// DRAG disabled
@@ -265,15 +261,16 @@ public class DogScript : MonoBehaviour
         */
     }
 
-    public void TakeDamage(float dame) {
-        if (view.IsMine == false)
-        {
-            view.TransferOwnership(PhotonNetwork.LocalPlayer);
-            // Debug.LogError("PhotonView with ID=" + view.ViewID + " does not exist.");
-        }
+    [PunRPC]
+    public void TakeDamage(int dame) {
+        // if (view.IsMine == false)
+        // {
+        //     view.TransferOwnership(PhotonNetwork.LocalPlayer);
+        //     // Debug.LogError("PhotonView with ID=" + view.ViewID + " does not exist.");
+        // }
         Health -= dame;
         animator.SetTrigger("isHurt");
-        animator.SetBool("canMoveAfterBeenAttack", false);
+        //animator.SetBool("canMoveAfterBeenAttack", false);
     }
 
     public void BeingDrag() {
@@ -350,5 +347,14 @@ public class DogScript : MonoBehaviour
 
     public void ResetMovement() {
         animator.SetBool("canMoveAfterBeenAttack", true);
+    }
+
+    public void ResetDigMovement() {
+        animator.SetBool("canMoveAfterDig", true);
+    }
+
+    [PunRPC]
+    private void FlipAnimationRPC(bool check) {
+        spriteRenderer.flipX = check;
     }
 }

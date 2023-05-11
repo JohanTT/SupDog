@@ -14,6 +14,12 @@ TagManager:
   - Hole1
   - Dog
   - PlayerItem
+  - Bone1
+  - Bone2
+  - Bone3
+  - Bone4
+  - Bone5
+  - Bone6
   layers:
   - Default
   - TransparentFX
