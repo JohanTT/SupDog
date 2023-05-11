@@ -154,6 +154,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
             if (player.Value.ActorNumber == 1)
             {
                 playerItemScript.setPlayerRole(true);
+                playerItemScript.setSpriteRole();
                 unPlayerItemsList.Add(newPlayerItem);
                 print("I'm HUNTER");
                 newPlayerItem.transform.SetParent(unPlayerItemParent.transform, false);
@@ -161,9 +162,14 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
             else
             {
                 playerItemScript.setPlayerRole(false);
+                playerItemScript.setSpriteRole();
                 playerItemsList.Add(newPlayerItem);
                 print("I'm DOG");
                 newPlayerItem.transform.SetParent(playerItemParent.transform, false);
+            }
+            if (player.Value.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                playerItemScript.setMySpriteRole();
             }
             /*
             GameObject newPlayerItem = PhotonNetwork.Instantiate(playerItemPrefab.name, Vector3.zero, Quaternion.identity);
@@ -226,6 +232,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
         lobbyPanel.SetActive(true);
         roomPanel.SetActive(false);
         roomName.text = "";
+        PhotonNetwork.LoadLevel("Lobby");
         //OnJoinedLobby();
     }
 

@@ -13,6 +13,10 @@ public class PlayerItem : MonoBehaviourPunCallbacks
 {
     public TMP_Text PlayerName;
     public bool role;
+    public Sprite myDog;
+    public Sprite theirDog;
+    public Sprite myHunter;
+    public Sprite theirHunter;
 
     ExitGames.Client.Photon.Hashtable playerProperties = new ExitGames.Client.Photon.Hashtable();
 
@@ -25,24 +29,46 @@ public class PlayerItem : MonoBehaviourPunCallbacks
         view = GetComponent<PhotonView>();
     }
 
-    void Update()
-    {
-        if (view.IsMine)
-        {
-            PlayerName.color = Color.blue;
-        }
-    }
-
     public void SetPlayerInfo(Player _player)
     {
         //if (view.IsMine)
         {
-            string Name = "You: " + _player.NickName;
+            string Name = _player.NickName;
             PlayerName.text = Name;
             player = _player;
             role = false;
             UpdatePlayerItem(player);
         }
+    }
+
+    public void Update()
+    {
+        
+    }
+
+    public void setSpriteRole()
+    {
+        if (role == true)
+        {
+            gameObject.GetComponent<Image>().sprite = theirHunter;
+        }
+        else
+        {
+            gameObject.GetComponent<Image>().sprite = theirDog;
+        }
+    }
+
+    public void setMySpriteRole()
+    {
+        if (role == true)
+        {
+            gameObject.GetComponent<Image>().sprite = myHunter;
+        }
+        else
+        {
+            gameObject.GetComponent<Image>().sprite = myDog;
+        }
+        
     }
 
     public void setPlayerRole(bool R)
