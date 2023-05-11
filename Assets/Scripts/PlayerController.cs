@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
                 SwordAttack();
             }
             
+            /*
             // Chức năng kéo
             if (Input.GetKeyDown(KeyCode.L)) {
                 // nếu chưa có bắt được con nào thì sẽ bắt
@@ -79,7 +80,7 @@ public class PlayerController : MonoBehaviour
                 dragScript.setY(animator.GetFloat("moveY"));
                 // (animator.GetFloat("moveX"), animator.GetFloat("moveY"));
                 dragScript.setPlayerTransform(transform.position);
-            }
+            }*/
             
             // Dash
             if (Input.GetKey(KeyCode.K)) 
@@ -116,7 +117,7 @@ public class PlayerController : MonoBehaviour
         {
             if (animator.GetBool("canMoveAfterAttack") && animator.GetBool("canMoveAfterDig")) {
                 movementInput.x = Input.GetAxisRaw("Horizontal");
-                movementInput.y = Input.GetAxisRaw("Vertical");
+                //movementInput.y = Input.GetAxisRaw("Vertical");
 
                 // if (movementInput.x != 0) movementInput.y = 0;
 
@@ -124,7 +125,7 @@ public class PlayerController : MonoBehaviour
                 if (movementInput != Vector2.zero)
                 {
                     animator.SetFloat("moveX", movementInput.x);
-                    animator.SetFloat("moveY", movementInput.y);
+                    //animator.SetFloat("moveY", movementInput.y);
                     bool success = TryMove(movementInput);
                     if (!success) {
                         success = TryMove(new Vector2(movementInput.x, 0));
@@ -138,6 +139,13 @@ public class PlayerController : MonoBehaviour
                 else {
                     animator.SetBool("isMoving", false);
                 }
+            }
+            if (movementInput.x < 0) {
+                spriteRenderer.flipX = true;
+                view.RPC("FlipAnimationRPC", RpcTarget.All, true);
+            } else if (movementInput.x > 0) {
+                spriteRenderer.flipX = false;
+                view.RPC("FlipAnimationRPC", RpcTarget.All, false);
             }
         }
     }
@@ -169,27 +177,34 @@ public class PlayerController : MonoBehaviour
     }
 
     public void SwordAttack() {
-        if (animator.GetFloat("moveX") >=1 && animator.GetFloat("moveY") == 0) {
+        swordAttack.setView(view);
+        if (animator.GetFloat("moveX") >=1) {
             swordAttack.AttackRight();
-        } else if (animator.GetFloat("moveX") <= -1 && animator.GetFloat("moveY") == 0) {
+        } 
+        else if (animator.GetFloat("moveX") <= -1) {
             swordAttack.AttackLeft();
-        } else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == 1) {
-            swordAttack.AttackTop();
-        } else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == -1) {
-            swordAttack.AttackBot();
-        }
+        } 
+        // else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == 1) {
+        //     swordAttack.AttackTop();
+        // } 
+        // else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == -1) {
+        //     swordAttack.AttackBot();
+        // }
     }
 
     public void DragingDog() {
         if (animator.GetFloat("moveX") >=1 && animator.GetFloat("moveY") == 0) {
             dragScript.DragRight();
-        } else if (animator.GetFloat("moveX") <= -1 && animator.GetFloat("moveY") == 0) {
+        } 
+        else if (animator.GetFloat("moveX") <= -1 && animator.GetFloat("moveY") == 0) {
             dragScript.DragLeft();
-        } else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == 1) {
-            dragScript.DragTop();
-        } else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == -1) {
-            dragScript.DragBot();
-        }
+        } 
+        // else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == 1) {
+        //     dragScript.DragTop();
+        // } 
+        // else if (animator.GetFloat("moveX") == 0 && animator.GetFloat("moveY") == -1) {
+        //     dragScript.DragBot();
+        // }
     }
 
     public void LockMovement() {
@@ -201,5 +216,9 @@ public class PlayerController : MonoBehaviour
         swordAttack.StopAttack();
 
         dragScript.StopDrag();
+    }
+    [PunRPC]
+    private void FlipAnimationRPC(bool check) {
+        spriteRenderer.flipX = check;
     }
 }

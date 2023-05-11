@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class Bone : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class Bone : MonoBehaviour
     public Image[] bones;
     public Sprite fullBone;
     public Sprite emptyBone;
+
+    PhotonView view;
+
+    void Start() {
+        view = GetComponent<PhotonView>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -34,6 +41,7 @@ public class Bone : MonoBehaviour
         }
     }
 
+    [PunRPC]
     public void addBone() {
         bone++;
     }
