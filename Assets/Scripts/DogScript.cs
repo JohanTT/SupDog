@@ -197,7 +197,7 @@ public class DogScript : MonoBehaviour
                 audioSource.Play();
                 if (view.IsMine) animator.SetBool("canMoveAfterDig", false);
                 if (triggerActive[i]) {
-                    holdTime[i] += 0.01f;
+                    holdTime[i] += 0.1f;
                     slider.DiggingItem(holdTime[i]);
                     if (view.IsMine) {
                         slider.TriggerSlider(true);
@@ -291,11 +291,11 @@ public class DogScript : MonoBehaviour
 
     public void Defeated() {
         PhotonView photonViewBone = PhotonView.Find(13);
-        audioSource.clip = eliClip;
-        audioSource.Play();
-        new WaitForSeconds(audioSource.clip.length);
-        photonViewBone.RPC("oneDown", RpcTarget.All);
+        //audioSource.clip = eliClip;
+        //audioSource.Play();
+        //new WaitForSeconds(audioSource.clip.length);
         PhotonNetwork.Destroy(gameObject);
+        photonViewBone.RPC("oneDown", RpcTarget.All);
     }
 
     private bool TryMove(Vector2 direction) {

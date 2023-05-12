@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
     public DragScript dragScript;
 
     //Start dashspeed
-    public float dashSpeed = 0.8f;
-    public float dashLength = 5f, dashCooldown = 5f;
+    public float dashSpeed = 1f;
+    public float dashLength = 4f, dashCooldown = 5f;
     public float dashCounter;
     public float dashCoolCounter;
 

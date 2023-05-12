@@ -20,14 +20,19 @@ public class Bone : MonoBehaviour
     public GameObject endgame;
     public GameObject EndTitle;
     public GameObject EndBrg;
+    public GameObject LobbyBtn;
+    public GameObject exitBtn;
     private int dogTags;
     PhotonView view;
-
     public Sprite dogWin;
     public Sprite hunterWin;
     public Sprite dogBrg;
     public Sprite hunterBrg;
 
+    public Sprite lobbyHunter;
+    public Sprite exitHunter;
+    public Sprite lobbyDog;
+    public Sprite exitDog;
     void Start() {
         view = GetComponent<PhotonView>();
         dogTags = GameObject.FindGameObjectsWithTag("Dog").Length;
@@ -66,6 +71,8 @@ public class Bone : MonoBehaviour
         {
             EndBrg.GetComponent<Image>().sprite = dogBrg;
             EndTitle.GetComponent<Image>().sprite = dogWin;
+            LobbyBtn.GetComponent<Image>().sprite = lobbyDog;
+            exitBtn.GetComponent<Image>().sprite = exitDog;
             audioSource.clip = dogWinClip;
             audioSource.Play();
             endgame.SetActive(true);
@@ -74,13 +81,15 @@ public class Bone : MonoBehaviour
 
     [PunRPC]
     public void oneDown() {
-        dogTags = GameObject.FindGameObjectsWithTag("Dog").Length;
         audioSource.clip = killDog;
         audioSource.Play();
+        dogTags = GameObject.FindGameObjectsWithTag("Dog").Length;
         if (dogTags == 0)
         {
             EndBrg.GetComponent<Image>().sprite = hunterBrg;
             EndTitle.GetComponent<Image>().sprite = hunterWin;
+            LobbyBtn.GetComponent<Image>().sprite = lobbyHunter;
+            exitBtn.GetComponent<Image>().sprite = exitHunter;
             audioSource.clip = hunterWinClip;
             audioSource.Play();
             endgame.SetActive(true);
