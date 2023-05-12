@@ -21,6 +21,12 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
     public GameObject connectButton;
     public Sprite connecting;
 
+    public AudioSource audioSource;
+
+    void Start() {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     void Update()
     {
         if (Input.anyKey)
@@ -34,6 +40,7 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
     {
         if (usernameInput.text.Length >= 1)
         {
+            audioSource.Play();
             connectButton.GetComponent<Image>().sprite = connecting;
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.NickName = usernameInput.text;

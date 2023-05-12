@@ -38,8 +38,14 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
     private string NickName = "";
     private bool IsTurnHunter = false;
     private bool IsTurnDog = false;
+    AudioSource audioSource;
+    public AudioClip joinRoom;
+    public AudioClip startGame;
 
-    
+    void Start() {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = joinRoom;
+    }
 
     public void CreateRoom()
     {
@@ -60,6 +66,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
         // Spawn đối tượng chờ
         //GameObject newPlayerItem = PhotonNetwork.Instantiate(playerItemPrefab.name, Vector3.zero, Quaternion.identity, 0);
         //newPlayerItem.transform.SetParent(playerItemParent.transform, false);
+        audioSource.Play();
         UpdatePlayerList();
     }
 
@@ -273,6 +280,10 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
     
     public void OnClickPlayButton()
     {
+        audioSource.clip = startGame;
+        audioSource.Play();
+        // Đợi cho phát lại audio kết thúc
+        new WaitForSeconds(audioSource.clip.length);
         PhotonNetwork.LoadLevel("Game");
     }
 }
