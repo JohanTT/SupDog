@@ -11,6 +11,7 @@ public class SpawnPlayers : MonoBehaviour
     public GameObject dogPrefab_2;
     public GameObject dogPrefab_3;
     public GameObject dogPrefab_4;
+
     public DragScript playerDragScript;
     // Đặt vị trí spawn
     public Vector3 hunterSpawn;
@@ -25,18 +26,7 @@ public class SpawnPlayers : MonoBehaviour
     {
         if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {            
             player = PhotonNetwork.Instantiate(playerPrefab.name, hunterSpawn, Quaternion.identity);   
-            
-            // print("Tới đây rồi");
             playerDragScript = player.GetComponentInChildren<DragScript>();
-            // print("Qua rồi");
-
-            // print(playerDragScript);
-            // // if (playerDragScript != null) 
-            // {
-            //     dog1.GetComponent<DogScript>().dragScript = playerDragScript;
-            //     dog2.GetComponent<DogScript>().dragScript = playerDragScript;
-            //     dog3.GetComponent<DogScript>().dragScript = playerDragScript;
-            // }
         }
         else {
             switch (PhotonNetwork.LocalPlayer.ActorNumber) {

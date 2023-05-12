@@ -19,7 +19,7 @@ public class DogScript : MonoBehaviour
     public SpawnPlayers spawnPlayers;
     public float health;
     public float maxHealth;
-    public float moveSpeed = 0.5f;
+    public float moveSpeed;
     public float CollisionOffset = 0.05f;
     bool holding = false;
     Rigidbody2D rgDog;
@@ -41,8 +41,8 @@ public class DogScript : MonoBehaviour
     Bone bone;
     
     //Start dashspeed
-    public float dashSpeed = 0.5f;
-    public float dashLength = 5f, dashCooldown = 5f;
+    public float dashSpeed;
+    public float dashLength, dashCooldown;
     public float dashCounter;
     public float dashCoolCounter;
     // bark sound
@@ -191,7 +191,7 @@ public class DogScript : MonoBehaviour
         }
         // Chức năng đào
         for (int i = 0; i < 6; i++) {
-            if (Input.GetKeyDown(KeyCode.Space) && view.IsMine) {
+            if (Input.GetKey(KeyCode.Space) && view.IsMine) {
                 animator.SetBool("isDigging", true);
                 audioSource.clip = digClip;
                 audioSource.Play();
@@ -211,7 +211,7 @@ public class DogScript : MonoBehaviour
                     }
                 }
             }
-            else if (!Input.GetKeyDown(KeyCode.Space)) {
+            else if (!Input.GetKey(KeyCode.Space)) {
                 if (view.IsMine) {
                     animator.SetBool("canMoveAfterDig", true);
                     animator.SetBool("isDigging", false);

@@ -9,7 +9,7 @@ using Cinemachine;
 public class PlayerController : MonoBehaviour
 {
     public ContactFilter2D movementFilter;
-    public float moveSpeed = 0.5f;
+    public float moveSpeed;
     public float CollisionOffset = 0.05f;
     public CinemachineVirtualCamera vcam;
     AudioSource audioSource;
@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
     public DragScript dragScript;
 
     //Start dashspeed
-    public float dashSpeed = 1f;
-    public float dashLength = 4f, dashCooldown = 5f;
+    public float dashSpeed;
+    public float dashLength, dashCooldown;
     public float dashCounter;
     public float dashCoolCounter;
 

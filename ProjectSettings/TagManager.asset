@@ -22,6 +22,8 @@ TagManager:
   - Bone6
   - Blue Portal
   - Orange Portal
+  - Black Portal
+  - White Portal
   layers:
   - Default
   - TransparentFX

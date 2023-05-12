@@ -67,7 +67,7 @@ public class Bone : MonoBehaviour
         bone++;
         audioSource.clip = bonePickClip;
         audioSource.Play();
-        if (bone >= 1)
+        if (bone >= 6)
         {
             EndBrg.GetComponent<Image>().sprite = dogBrg;
             EndTitle.GetComponent<Image>().sprite = dogWin;

@@ -375,7 +375,7 @@ Transform:
   m_GameObject: {fileID: 1258640481550762579}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.648, y: -0.288, z: 0.00013440847}
-  m_LocalScale: {x: 0.7516305, y: 0.7516305, z: 0.7516305}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1220290869}
@@ -510,7 +510,7 @@ MonoBehaviour:
   spawnPlayers: {fileID: 0}
   health: 2
   maxHealth: 2
-  moveSpeed: 0.5
+  moveSpeed: 1
   CollisionOffset: 0.05
   hearts:
   - {fileID: 19582414}
@@ -525,9 +525,9 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  dashSpeed: 0.8
-  dashLength: 5
-  dashCooldown: 5
+  dashSpeed: 1.1
+  dashLength: 2
+  dashCooldown: 4
   dashCounter: 0
   dashCoolCounter: 0
   barkCoolCounter: 0
@@ -647,7 +647,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 0.5
-  MaxDistance: 10
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
