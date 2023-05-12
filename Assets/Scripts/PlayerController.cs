@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 0.5f;
     public float CollisionOffset = 0.05f;
     public CinemachineVirtualCamera vcam;
-
+    AudioSource audioSource;
     SpriteRenderer spriteRenderer;
     Vector2 movementInput;
     Rigidbody2D rigid;
@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
     public DragScript dragScript;
 
     //Start dashspeed
-    public float dashSpeed = 0.8f;
-    public float dashLength = 5f, dashCooldown = 5f;
+    public float dashSpeed = 1f;
+    public float dashLength = 4f, dashCooldown = 5f;
     public float dashCounter;
     public float dashCoolCounter;
 
@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("moveX", 0);
         animator.SetFloat("moveY", -1);
         if (!view.IsMine) vcam.enabled = false;
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.J)) {
                 animator.SetBool("canMoveAfterAttack", false);
                 animator.SetTrigger("swordAttack");
+                audioSource.Play();
                 SwordAttack();
             }
             
@@ -214,7 +216,6 @@ public class PlayerController : MonoBehaviour
     public void ResetMovement() {
         animator.SetBool("canMoveAfterAttack", true);
         swordAttack.StopAttack();
-
         dragScript.StopDrag();
     }
     [PunRPC]

@@ -10,6 +10,9 @@ public class DogScript : MonoBehaviour
 {
     public AudioSource audioSource;
     public AudioClip barkClip;
+    public AudioClip hurtClip;
+    public AudioClip eliClip;
+    public AudioClip digClip;
     public CinemachineVirtualCamera vcam;
     public ContactFilter2D movementFilter;
     public DragScript dragScript;
@@ -32,7 +35,7 @@ public class DogScript : MonoBehaviour
     // Các biến sử dụng cho việc tích slider
     private bool []triggerActive = new bool [6];        
     public float []holdTime = new float [6];
-
+    bool digging = false;
     // Biến cho bone
     GameObject Bone;
     Bone bone;
@@ -123,60 +126,13 @@ public class DogScript : MonoBehaviour
                 audioSource.clip = barkClip;
                 audioSource.Play();
                 animator.SetBool("canMoveAfterBark", false);
+                animator.SetTrigger("isBark");
                 barkCoolCounter = 2f;
             }
         }
         // Hồi sủa liên tục
         if (barkCoolCounter > 0) {
             barkCoolCounter -= Time.deltaTime;
-            animator.SetBool("canMoveAfterBark", true);
-        }
-        // Chức năng đào
-        for (int i = 0; i < 6; i++) {
-            // if (view.IsMine)
-            {
-                if (Input.GetKeyDown(KeyCode.Space)) {
-                    animator.SetTrigger("isDigging");
-                    if (view.IsMine) animator.SetBool("canMoveAfterDig", false);
-                    if (triggerActive[i]) {
-                        holdTime[i] += 0.3f;
-                        slider.DiggingItem(holdTime[i]);
-                        if (view.IsMine) slider.TriggerSlider(true);
-                        if (view.IsMine) {
-                            GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
-                            PhotonView photonView = tmp.GetComponent<PhotonView>();
-                            if (photonView != null) {
-                                print(photonView.ViewID);
-                                if (!photonView.IsMine) {
-                                    photonView.TransferOwnership(PhotonNetwork.LocalPlayer);
-                                    print("Transfer to " + view.ViewID);
-                                }
-                            }
-                        }
-                    }
-                }
-                // else if (!Input.GetKey(KeyCode.Space)) {
-                //     if (view.IsMine) animator.SetBool("canMoveAfterDig", true);
-                    //animator.SetTrigger("isDigging");
-                    // Giảm dần hố đã đào
-                    // if (holdTime[i] >= 0.0f)  
-                    // {
-                    //     holdTime[i] -= 0.0009f;
-                    //     _itemDiggingController.DiggingItem(holdTime[i]);
-                    // }
-                // }
-            }
-            if (triggerActive[i] && holdTime[i] >= 3f)
-            {
-                if (view.IsMine) slider.TriggerSlider(false);
-                holdTime[i] = 0f;
-                slider.DiggingItem(holdTime[i]);
-                GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
-                PhotonView photonView = tmp.GetComponent<PhotonView>();
-                PhotonView photonViewBone = PhotonView.Find(13);
-                photonViewBone.RPC("addBone", RpcTarget.All);
-                if (photonView.IsMine) PhotonNetwork.Destroy(tmp);
-            }
         }
         // Dash
             if (view.IsMine && Input.GetKey(KeyCode.K)) 
@@ -209,7 +165,6 @@ public class DogScript : MonoBehaviour
     private void FixedUpdate() {
         if (view.IsMine) {
             if (animator.GetBool("canMoveAfterBeenAttack") && animator.GetBool("canMoveAfterDig") && animator.GetBool("canMoveAfterBark")) {
-
                 // Nếu input vào không phải 0 thì sẽ phải di chuyển tương ứng
                 if (movementInput != Vector2.zero)
                 {
@@ -234,6 +189,55 @@ public class DogScript : MonoBehaviour
                 view.RPC("FlipAnimationRPC", RpcTarget.All, false);
             }
         }
+        // Chức năng đào
+        for (int i = 0; i < 6; i++) {
+            if (Input.GetKeyDown(KeyCode.Space) && view.IsMine) {
+                animator.SetBool("isDigging", true);
+                audioSource.clip = digClip;
+                audioSource.Play();
+                if (view.IsMine) animator.SetBool("canMoveAfterDig", false);
+                if (triggerActive[i]) {
+                    holdTime[i] += 0.1f;
+                    slider.DiggingItem(holdTime[i]);
+                    if (view.IsMine) {
+                        slider.TriggerSlider(true);
+                        GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
+                        PhotonView photonView = tmp.GetComponent<PhotonView>();
+                        if (photonView != null) {
+                            if (!photonView.IsMine) {
+                                photonView.TransferOwnership(PhotonNetwork.LocalPlayer);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!Input.GetKeyDown(KeyCode.Space)) {
+                if (view.IsMine) {
+                    animator.SetBool("canMoveAfterDig", true);
+                    animator.SetBool("isDigging", false);
+                }
+                // Giảm dần hố đã đào
+                // if (holdTime[i] >= 0.0f)  
+                // {
+                //     holdTime[i] -= 0.0009f;
+                //     _itemDiggingController.DiggingItem(holdTime[i]);
+                // }
+            }
+            if (triggerActive[i] && holdTime[i] >= 3f)
+            {
+                if (view.IsMine) {    
+                    slider.TriggerSlider(false);
+                    slider.DiggingItem(0f);
+                }
+                holdTime[i] = 0f;
+                GameObject tmp = GameObject.FindWithTag("Hole" + (i+1));
+                PhotonView photonView = tmp.GetComponent<PhotonView>();
+                PhotonView photonViewBone = PhotonView.Find(13);
+                photonViewBone.RPC("addBone", RpcTarget.All);
+                if (photonView.IsMine) PhotonNetwork.Destroy(tmp);
+            }
+        }
+        
         /*// DRAG disabled
         if (spawnPlayers.getDragScript() != null) {
             if (dragScript.getTriggerDrag() && dragScript.getCurrentDog() == view.ViewID) {
@@ -263,13 +267,12 @@ public class DogScript : MonoBehaviour
 
     [PunRPC]
     public void TakeDamage(int dame) {
-        // if (view.IsMine == false)
-        // {
-        //     view.TransferOwnership(PhotonNetwork.LocalPlayer);
-        //     // Debug.LogError("PhotonView with ID=" + view.ViewID + " does not exist.");
-        // }
         Health -= dame;
-        animator.SetTrigger("isHurt");
+        if (view.IsMine) {
+            audioSource.clip = hurtClip;
+            audioSource.Play();
+            animator.SetTrigger("isHurt");
+        }
         //animator.SetBool("canMoveAfterBeenAttack", false);
     }
 
@@ -287,7 +290,12 @@ public class DogScript : MonoBehaviour
     }
 
     public void Defeated() {
+        PhotonView photonViewBone = PhotonView.Find(13);
+        //audioSource.clip = eliClip;
+        //audioSource.Play();
+        //new WaitForSeconds(audioSource.clip.length);
         PhotonNetwork.Destroy(gameObject);
+        photonViewBone.RPC("oneDown", RpcTarget.All);
     }
 
     private bool TryMove(Vector2 direction) {
@@ -325,8 +333,6 @@ public class DogScript : MonoBehaviour
                 if (holdTime[i] > 0) {
                     slider.TriggerSlider(true);
                     slider.DiggingItem(holdTime[i]);
-                    // _itemDiggingController.TriggerSlider(true);
-                    // _itemDiggingController.DiggingItem(holdTime[i]);
                 }
             }
         }
@@ -339,18 +345,24 @@ public class DogScript : MonoBehaviour
             {
                 triggerActive[i] = false;
                 slider.TriggerSlider(false);
-                // _itemDiggingController.TriggerSlider(false);
             }
         }
     
     }
 
     public void ResetMovement() {
-        animator.SetBool("canMoveAfterBeenAttack", true);
+        if (view.IsMine) animator.SetBool("canMoveAfterBeenAttack", true);
     }
 
     public void ResetDigMovement() {
-        animator.SetBool("canMoveAfterDig", true);
+        //animator.SetBool("canMoveAfterDig", true);
+    }
+
+    public void ResetBark() {
+        if (view.IsMine) {
+        //    animator.SetTrigger("isBark");
+            animator.SetBool("canMoveAfterBark", true);
+        }
     }
 
     [PunRPC]
