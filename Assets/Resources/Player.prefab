@@ -825,7 +825,7 @@ MonoBehaviour:
   dragScript: {fileID: 7609122513041193217}
   dashSpeed: 1.5
   dashLength: 2
-  dashCooldown: 4
+  dashCooldown: 5
   dashCounter: 0
   dashCoolCounter: 0
 --- !u!50 &3009533982309328572

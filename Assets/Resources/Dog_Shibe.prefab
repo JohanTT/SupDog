@@ -527,7 +527,7 @@ MonoBehaviour:
   - 0
   dashSpeed: 1.1
   dashLength: 2
-  dashCooldown: 4
+  dashCooldown: 3
   dashCounter: 0
   dashCoolCounter: 0
   barkCoolCounter: 0
