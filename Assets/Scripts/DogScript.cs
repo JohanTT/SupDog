@@ -19,7 +19,7 @@ public class DogScript : MonoBehaviour
     public SpawnPlayers spawnPlayers;
     public float health;
     public float maxHealth;
-    public float moveSpeed;
+    public float moveSpeed = 1f;
     public float CollisionOffset = 0.05f;
     bool holding = false;
     Rigidbody2D rgDog;
@@ -41,8 +41,8 @@ public class DogScript : MonoBehaviour
     Bone bone;
     
     //Start dashspeed
-    public float dashSpeed;
-    public float dashLength, dashCooldown;
+    public float dashSpeed = 1.1f;
+    public float dashLength = 2f, dashCooldown = 3f;
     public float dashCounter;
     public float dashCoolCounter;
     // bark sound
@@ -151,7 +151,7 @@ public class DogScript : MonoBehaviour
                 
                 if (dashCounter <= 0)
                 {
-                    moveSpeed = 0.5f;
+                    moveSpeed = 1f;
                     dashCoolCounter = dashCooldown;
                 }
             }
