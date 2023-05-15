@@ -128,6 +128,7 @@ public class DogScript : MonoBehaviour
                 animator.SetBool("canMoveAfterBark", false);
                 animator.SetTrigger("isBark");
                 barkCoolCounter = 2f;
+                view.RPC("barkAll", RpcTarget.All);
             }
         }
         // Hồi sủa liên tục
@@ -197,7 +198,7 @@ public class DogScript : MonoBehaviour
                 audioSource.Play();
                 if (view.IsMine) animator.SetBool("canMoveAfterDig", false);
                 if (triggerActive[i]) {
-                    holdTime[i] += 0.1f;
+                    holdTime[i] += 0.01f;
                     slider.DiggingItem(holdTime[i]);
                     if (view.IsMine) {
                         slider.TriggerSlider(true);
@@ -215,6 +216,7 @@ public class DogScript : MonoBehaviour
                 if (view.IsMine) {
                     animator.SetBool("canMoveAfterDig", true);
                     animator.SetBool("isDigging", false);
+                    view.RPC("resetDigAnimation", RpcTarget.All);
                 }
                 // Giảm dần hố đã đào
                 // if (holdTime[i] >= 0.0f)  
@@ -275,6 +277,8 @@ public class DogScript : MonoBehaviour
         }
         //animator.SetBool("canMoveAfterBeenAttack", false);
     }
+
+
 
     public void BeingDrag() {
         transform.position = Vector3.Lerp(transform.position, dragScript.getDragOffset(), 0.5f);
@@ -350,6 +354,7 @@ public class DogScript : MonoBehaviour
     
     }
 
+    
     public void ResetMovement() {
         if (view.IsMine) animator.SetBool("canMoveAfterBeenAttack", true);
     }
@@ -368,5 +373,17 @@ public class DogScript : MonoBehaviour
     [PunRPC]
     private void FlipAnimationRPC(bool check) {
         spriteRenderer.flipX = check;
+    }
+
+    [PunRPC]
+    private void resetDigAnimation() {
+        animator.SetBool("canMoveAfterDig", true);
+        animator.SetBool("isDigging", false);
+    }
+
+    [PunRPC]
+    private void barkAll() {
+        audioSource.clip = barkClip;
+        audioSource.Play();
     }
 }

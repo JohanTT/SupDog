@@ -818,12 +818,12 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  moveSpeed: 0.9
+  moveSpeed: 0.8
   CollisionOffset: 0.05
   vcam: {fileID: 1881705564}
   swordAttack: {fileID: 7609122511946260487}
   dragScript: {fileID: 7609122513041193217}
-  dashSpeed: 1.3
+  dashSpeed: 1.1
   dashLength: 5
   dashCooldown: 5
   dashCounter: 0
@@ -859,7 +859,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.020000003, y: -0.26}
